@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\Country;
-use App\Services\Countries\CountryService;
 use App\Services\Slugs\SlugService;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\File;
@@ -11,7 +10,6 @@ use Illuminate\Support\Facades\File;
 class CountrySeeder extends Seeder
 {
     public function __construct(
-        private readonly CountryService $countryService,
         private readonly SlugService $slugService,
     )
     {}
@@ -38,7 +36,7 @@ class CountrySeeder extends Seeder
             ]);
 
             $country->slug()->create([
-                'slug' => $this->slugService->getUniqueSlug($countryDTO->name),
+                'slug' => $this->slugService->getUniqueSlug($country->name),
                 'published_at' => now(),
             ]);
         }

@@ -10,8 +10,10 @@ return new class extends Migration {
         Schema::create('countries', function (Blueprint $table) {
             $table->id()->index();
             $table->string('name')->unique()->index();
-            $table->string('code')->unique()->index();
-            $table->string('continent')->index();
+            $table->string('iso2_code')->unique()->index();
+            $table->string('iso3_code')->unique()->index();
+            $table->string('numeric_code')->unique()->index();
+            $table->string('phone_code')->index();
             $table->timestamps();
             $table->timestamp('published_at')->nullable();
         });

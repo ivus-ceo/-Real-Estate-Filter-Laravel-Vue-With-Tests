@@ -2,15 +2,15 @@
 
 namespace Database\Seeders;
 
+use App\Models\Country;
 use App\Models\Region;
-use App\Services\Regions\RegionService;
 use App\Services\Slugs\SlugService;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\File;
 
 class RegionSeeder extends Seeder
 {
     public function __construct(
-        private readonly RegionService $regionService,
         private readonly SlugService $slugService,
     )
     {}
@@ -20,24 +20,29 @@ class RegionSeeder extends Seeder
      */
     public function run(): void
     {
-        foreach ($this->regionService->getRegionDTOs() as $regionDTO)
+        foreach ($this->getFileRegions() as $fileRegion)
         {
             $region = Region::create([
-                'name' => $regionDTO->name,
-                'code' => $regionDTO->code,
-                'country_id' => $regionDTO->country->id,
+                'name' => $fileRegion['name'],
+                'code' => $fileRegion['state_code'],
+                'country_id' => Country::firstWhere('iso3_code', $fileRegion['country_iso3_code'])->id,
                 'published_at' => now(),
             ]);
 
             $region->location()->create([
-                'latitude' => $regionDTO->latitude,
-                'longitude' => $regionDTO->longitude,
+                'latitude' => $fileRegion['latitude'],
+                'longitude' => $fileRegion['longitude'],
             ]);
 
             $region->slug()->create([
-                'slug' => $this->slugService->getUniqueSlug($regionDTO->name . '-' . $regionDTO->code),
+                'slug' => $this->slugService->getUniqueSlug($region->name . '-' . $region->code),
                 'published_at' => now(),
             ]);
         }
+    }
+
+    private function getFileRegions(): array
+    {
+        return json_decode(File::get(public_path('jsons/regions.json')), true);
     }
 }
