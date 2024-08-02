@@ -6,11 +6,10 @@ use App\Models\Traits\{HasLocation, HasPublishDate, HasSlug};
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 class Region extends Model
 {
-    use HasPublishDate, HasSlug, HasLocation;
+    use HasSlug, HasPublishDate, HasLocation;
 
     protected $fillable = [
         'name',
